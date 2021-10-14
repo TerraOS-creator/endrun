@@ -36,6 +36,7 @@ public class CharacterMoveController : MonoBehaviour
     private CharacterSoundController sound;
     // Start is called before the first frame update
     private Rigidbody2D rig;
+    private BoxCollider2D boxCollider2D;
     void Start()
     {
         rig = GetComponent<Rigidbody2D>();
@@ -43,7 +44,6 @@ public class CharacterMoveController : MonoBehaviour
         sound = GetComponent<CharacterSoundController>();
 
     }
-
     // Update is called once per frame
     private void Update()
     {
@@ -52,7 +52,6 @@ public class CharacterMoveController : MonoBehaviour
         {
             isJumping = true;
             sound.PlayJump();
-
         }
 
         // change animation
@@ -80,12 +79,12 @@ public class CharacterMoveController : MonoBehaviour
         if (rig.velocity.magnitude < 0){
             GameOver();
             
-
         }
+        
     }
     private void OnCollisionEnter(Collision collision )
     {
-        if(collision.gameObject.tag == "misc") {
+        if(collision.gameObject.tag == "obstacle") {
 
             GameOver();
         }
