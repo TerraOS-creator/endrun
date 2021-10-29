@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-
-
 public class CharacterMoveController : MonoBehaviour
 {
     [Header("Movement")]
@@ -13,9 +11,6 @@ public class CharacterMoveController : MonoBehaviour
     [Header("Jump")]
     public float jumpAccel;
 
-    private bool isJumping;
-    private bool isOnGround;
-
     [Header("Ground Raycast")]
     public float groundRaycastDistance;
     public LayerMask groundLayerMask;
@@ -23,7 +18,7 @@ public class CharacterMoveController : MonoBehaviour
     [Header("Scoring")]
     public ScoreController score;
     public float scoringRatio;
-    private float lastPositionX;
+
     [Header("GameOver")]
     public GameObject gameOverScreen;
     public float fallPositionY;
@@ -31,27 +26,31 @@ public class CharacterMoveController : MonoBehaviour
     [Header("Camera")]
     public CameraMoveController gameCamera;
 
-
+    private Rigidbody2D rig;
     private Animator anim;
     private CharacterSoundController sound;
-    // Start is called before the first frame update
-    private Rigidbody2D rig;
-    private BoxCollider2D boxCollider2D;
-    void Start()
+    private BoxCollider2D box;
+    private bool isJumping;
+    private bool isOnGround;
+
+    private float lastPositionX;
+
+    private void Start()
     {
         rig = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         sound = GetComponent<CharacterSoundController>();
-
+        
     }
-    // Update is called once per frame
+
     private void Update()
     {
         // read input
-        if (Input.GetKey(KeyCode.Space))
-        {
-            isJumping = true;
-            sound.PlayJump();
+        if (Input.GetMouseButtonDown(0))
+        {       
+                isJumping = true;
+
+                sound.PlayJump();
         }
 
         // change animation
@@ -68,27 +67,46 @@ public class CharacterMoveController : MonoBehaviour
         }
 
         // game over
-        if (transform.position.y > 20)
-        {
-            GameOver();
-        }
         if (transform.position.y < fallPositionY)
         {
             GameOver();
         }
-        if (rig.velocity.magnitude < 0){
-            GameOver();
-            
-        }
-        
     }
-    private void OnCollisionEnter(Collision collision )
+    private bool isGrounded()
     {
-        if(collision.gameObject.tag == "obstacle") {
-
-            GameOver();
-        }
+        return transform.Find("GroundCheck").GetComponent<GroundCheck>().isGrounded;
     }
+    private void FixedUpdate()
+    {
+        /*
+        // raycast ground
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, groundRaycastDistance, groundLayerMask);
+        if (hit)
+        {
+            if (!isOnGround && rig.velocity.y <= 2)
+            {
+                isOnGround = true;
+            }
+        }
+        else
+        {
+            isOnGround = false;
+        }
+        */
+        // calculate velocity vector
+        Vector2 velocityVector = rig.velocity;
+
+        if (isJumping)
+        {
+            velocityVector.y += jumpAccel;
+            isJumping = false;
+        }
+
+        velocityVector.x = Mathf.Clamp(velocityVector.x + moveAccel * Time.deltaTime, 0.0f, maxSpeed);
+
+        rig.velocity = velocityVector;
+    }
+
     private void GameOver()
     {
         // set high score
@@ -102,37 +120,6 @@ public class CharacterMoveController : MonoBehaviour
 
         // disable this too
         this.enabled = false;
-    }
-
-
-    private void FixedUpdate()
-    {
-        // raycast ground
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, groundRaycastDistance, groundLayerMask);
-        if (hit)
-        {
-            if (!isOnGround && rig.velocity.y <= 0)
-            {
-                isOnGround = true;
-            }
-        }
-        else
-        {
-            isOnGround = false;
-        }
-
-        // calculate velocity vector
-        Vector2 velocityVector = rig.velocity;
-
-        if (isJumping)
-        {
-            velocityVector.y += jumpAccel;
-            isJumping = false;
-        }
-
-        velocityVector.x = Mathf.Clamp(velocityVector.x + moveAccel * Time.deltaTime, 0.0f, maxSpeed);
-
-        rig.velocity = velocityVector;
     }
 
     private void OnDrawGizmos()

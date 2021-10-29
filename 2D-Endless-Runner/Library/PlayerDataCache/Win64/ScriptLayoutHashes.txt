@@ -1,6 +1,6 @@
 Win64
 PlayerPath?
-F:/Bryant/Project/Unity/2D runner/2dRunner/2D-Endless-Runner.exe
+F:/Bryant/Project/Unity/2D runner/GG/2D-Endless-Runner.exe
 SceneListBegin?
 Assets/Scenes/SampleScene.unity
 SceneListEnd?
@@ -164,3 +164,4 @@ d791aa6007fa3640be1164ea75bb087d Unity.TextMeshPro.dll:TMPro.TMP_StyleSheet
 c6666661329916e218bee7f5e79e60f5 Unity.TextMeshPro.dll:TMPro.TextMeshPro
 3165968ba45c74472d279ba04455fccb Unity.TextMeshPro.dll:TMPro.TMP_ColorGradient
 8649814970b42d345b89944b862453cc Unity.TextMeshPro.dll:TMPro.TMP_SubMesh
+0dc632241694b33811c7efc97403e05b Assembly-CSharp.dll:.GroundCheck
